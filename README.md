@@ -1,2 +1,2 @@
 # Discarded-Material-Identification-System
-This project is an end-to-end Machine Learning solution designed to detect and classify waste objects in images/live video. It leverages the state-of-the-art object detection model to achieve high accuracy and real-time performance. The system is built with a production-ready mindset, featuring a modular architecture, automated pipelines
+An end-to-end ML system to detect and classify waste in images/live video using a state-of-the-art object detection model for real-time accuracy. Built with modular design, automated pipelines, and CI/CD for cloud deployment.
