@@ -4,7 +4,7 @@ An end-to-end ML system to detect and classify waste in images/live video using 
 ## Project Preview
 
 <p align="center">
-  <img src="https://backend.krishnaik.in/media/project_banners/-gemini_generated_image_titapqtitapqtita-2-ba094c42b869db177123c86512004d47.jpg"
+  <img src="https://d14omfvx1qlabb.cloudfront.net/krishnaik.in/media/project_banners/14.png"
        alt="Project Preview"
        width="600" />
 </p>
@@ -12,7 +12,7 @@ An end-to-end ML system to detect and classify waste in images/live video using 
 ## System Architecture
 
 <p align="center">
-  <img src="https://backend.krishnaik.in/media/project_architecture_diagrams/project_diagram.jpg"
+  <img src="https://d14omfvx1qlabb.cloudfront.net/krishnaik.in/media/project_architecture_diagrams/project_diagram.jpg"
        alt="System Architecture"
        width="600" />
 </p>
