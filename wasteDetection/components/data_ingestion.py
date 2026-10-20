@@ -32,7 +32,7 @@ class DataIngestion:
             return zip_file_path
         
         except Exception as e:
-            raise AppException(e,str)
+            raise AppException(e,sys)
         
     def extract_zip_file(self,zip_file_path:str)->str:
         try:

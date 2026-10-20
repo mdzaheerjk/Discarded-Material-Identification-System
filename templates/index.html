@@ -2,350 +2,1107 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Web App</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="AI-Powered Discarded Material Identification and Waste Detection System using YOLOv5">
+    <title>EcoVision • Discarded Material Identification System</title>
 
-		.iupload h3 {
-			color: #1b2d6b;
-			font-size: 30px;
-			font-weight: 700;
-		}
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-		.img-part-1 {
-			height: 300px;
-			width: 300px;
-			margin: 0px auto;
-		}
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-		.image-part {
-			height: 300px;
-			width: 300px;
-			border: 1px solid #1b2d6b;
-		}
+    <style>
+        :root {
+            --bg-base: #0a0e17;
+            --bg-surface: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-card-hover: rgba(24, 34, 53, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(16, 185, 129, 0.35);
+            --accent-green: #10b981;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --text-primary: #f9fafb;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --card-radius: 20px;
+            --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-		.image-part img {
-			/* position: absolute; */
-			height: 300px;
-			width: 300px;
-			display: none;
-			padding: 5px;
-		}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-		.image-part #video {
-			/* display: block; */
-			height: 300px;
-			width: 300px;
-			padding: 5px;
-		}
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 60%);
+            background-attachment: fixed;
+        }
 
-		.res-part {
-			/* margin-left: 20px; */
-			height: 400px;
-			width: 100%;
-			padding: 5px;
-			margin: 0px auto;
-			overflow: auto;
-		}
+        /* Top Navigation Header */
+        .navbar {
+            background: rgba(10, 14, 23, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px 24px;
+        }
 
-		.upload-image {
-			/* margin-left: 20px; */
-			height: 400px;
-			width: auto;;
-			padding: 5px;
-			margin: 0px auto;
-			overflow: auto;
-		}
+        .nav-container {
+            max-width: 1360px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-		.resp-img {
-			height: 400px;
-			width: auto;
-			margin: 0px auto;
-		}
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
 
-		.jsonRes {
-			margin-left: 30px;
-		}
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+            transition: var(--transition);
+        }
 
-		#send {
-			cursor: pointer;
-		}
+        .brand-wrapper:hover .brand-icon {
+            transform: rotate(8deg) scale(1.05);
+        }
 
-		.btn-part {
-			width: 325px;
-		}
+        .brand-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
 
-		textarea,
-		select,
-		.form-control,
-		.custom-select,
-		button.btn,
-		.btn-primary,
-		input[type="text"],
-		input[type="url"],
-		.uneditable-input {
-			border: 1px solid #363e75;
-			outline: 0 !important;
-			border-radius: 0px;
-			box-shadow: none;
-			-webkit-box-shadow: none;
-			-moz-box-shadow: none;
-			-moz-transition: none;
-			-webkit-transition: none;
-		}
+        .brand-text span {
+            font-size: 12px;
+            color: var(--accent-green);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
 
-		textarea:focus,
-		select:focus,
-		.form-control:focus,
-		.btn:focus,
-		.btn-primary:focus,
-		.custom-select:focus,
-		input[type="text"]:focus,
-		.uneditable-input:focus {
-			border: 1px solid #007bff;
-			outline: 0 !important;
-			border-radius: 0px;
-			box-shadow: none;
-			-webkit-box-shadow: none;
-			-moz-box-shadow: none;
-			-moz-transition: none;
-			-webkit-transition: none;
-		}
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 7px 15px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #34d399;
+        }
 
-		#loading {
-			position: fixed;
-			left: 0px;
-			top: 0px;
-			width: 100%;
-			height: 100%;
-			z-index: 9999999999;
-			overflow: hidden;
-			background: rgba(255, 255, 255, 0.7);
-		}
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 12px #10b981;
+            animation: pulse-dot 2s infinite ease-in-out;
+        }
 
-		.loader {
-			border: 8px solid #f3f3f3;
-			border-top: 8px solid #363e75;
-			border-radius: 50%;
-			width: 60px;
-			height: 60px;
-			left: 50%;
-			margin-left: -4em;
-			display: block;
-			animation: spin 2s linear infinite;
-		}
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.35); opacity: 0.6; }
+        }
 
-		.loader,
-		.loader:after {
-			display: block;
-			position: absolute;
-			top: 50%;
-			margin-top: -4.05em;
-		}
+        /* Hero Banner */
+        .hero-section {
+            max-width: 1360px;
+            margin: 28px auto 16px;
+            padding: 0 24px;
+            text-align: center;
+        }
 
-		@keyframes spin {
-			0% {
-				transform: rotate(0deg);
-			}
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 5px 14px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
 
-			100% {
-				transform: rotate(360deg);
-			}
-		}
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
 
-		.logo {
-			position: absolute;
-			right: 0px;
-			bottom: 0px;
-			margin-right: 30px;
-			margin-bottom: 30px;
-		}
-	</style>
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 660px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Main Workspace Container */
+        .workspace {
+            max-width: 1360px;
+            width: 100%;
+            margin: 20px auto 40px;
+            padding: 0 24px;
+            flex: 1;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 992px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glassmorphism Card Panels */
+        .panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--card-radius);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .panel-title i {
+            color: var(--accent-green);
+            font-size: 18px;
+        }
+
+        /* Mode Switcher Tabs */
+        .mode-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        /* Viewport / Display Stage */
+        .stage-box {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .stage-box.dragover {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.06);
+            transform: scale(0.995);
+        }
+
+        /* Dropzone Empty State */
+        .dropzone-prompt {
+            text-align: center;
+            padding: 30px 20px;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .dropzone-prompt:hover .prompt-icon-ring {
+            transform: scale(1.08);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .prompt-icon-ring {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .prompt-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .prompt-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            max-width: 280px;
+            line-height: 1.5;
+        }
+
+        .browse-link {
+            color: var(--accent-green);
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        /* Media Elements inside Stage */
+        #photo, #video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+            border-radius: 14px;
+        }
+
+        .stage-overlay-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stage-clear-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .stage-clear-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #ffffff;
+        }
+
+        /* Action Buttons Area */
+        .action-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 13px 20px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-cyan {
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #38bdf8;
+        }
+
+        .btn-outline-cyan:hover:not(:disabled) {
+            background: rgba(6, 182, 212, 0.18);
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Result Panel Details */
+        .result-empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .result-empty-icon {
+            font-size: 44px;
+            margin-bottom: 14px;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .result-img-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .result-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Detection Classes Legend Bar */
+        .classes-card {
+            max-width: 1360px;
+            margin: 0 auto 30px;
+            padding: 0 24px;
+        }
+
+        .classes-box {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--card-radius);
+            padding: 22px 26px;
+        }
+
+        .classes-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .classes-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .class-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .class-pill:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            transform: translateY(-1px);
+        }
+
+        .class-pill i {
+            font-size: 11px;
+            color: var(--accent-green);
+        }
+
+        /* Notification / Toast */
+        .toast-msg {
+            display: none;
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .toast-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+
+        .toast-success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+        }
+
+        /* Loading Overlay Modal */
+        #loading {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loader-card {
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 36px 48px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 56px;
+            height: 56px;
+            border: 4px solid rgba(255, 255, 255, 0.08);
+            border-top: 4px solid var(--accent-green);
+            border-right: 4px solid var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 0.9s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .loader-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-glass);
+            background: rgba(10, 14, 23, 0.6);
+            padding: 20px 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer span {
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body>
-	<!-- <div class="main container">
-		<section class="iupload">
-			<h3 class="text-center py-4">Object Detection Using TFOD</h3>
-			<div class="row">
-				<div class="img-part col-md-6">
-					<div class="image-part">
-						<video autoplay id="video"
-							poster="https://img.freepik.com/free-vector/group-young-people-posing-photo_52683-18824.jpg?size=338&ext=jpg"></video>
-						<img src="" id="photo">
-						<canvas style="display:none;" id="canvas"></canvas>
-					</div>
-				</div>
-				<div class="col-md-6 col-xs-12 right-part">
-					<h5 class="mb-2">
-						Prediction Results
-					</h5>
-					<div class="row">
-						<div class="res-part2 col-md-2 col-xs-12"></div>
-					</div>
-				</div>
-			</div>
-		</section>
+    <!-- Top Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-wrapper">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-recycle"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>EcoVision AI</h1>
+                    <span>Discarded Material Identification</span>
+                </div>
+            </a>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>YOLOv5 Model Online</span>
+            </div>
+        </div>
+    </nav>
 
-		
-	</div> -->
+    <!-- Hero Header -->
+    <header class="hero-section">
+        <div class="hero-badge">
+            <i class="fa-solid fa-microchip"></i> Real-time Computer Vision
+        </div>
+        <h2 class="hero-title">Automated <span class="gradient-text">Discarded Material</span> Detection</h2>
+        <p class="hero-subtitle">Upload waste imagery or activate camera feed to detect, categorize, and locate recyclable materials using custom fine-tuned YOLOv5 deep learning models.</p>
+    </header>
 
-	<!-- Header -->
-<header class="bg-primary text-center py-5 mb-4">
-	<div class="container">
-	  <h1 class="font-weight-light text-white">Waste Detection using YOLOv5</h1>
-	</div>
-  </header>
-  
-  <!-- Page Content -->
-  <div class="container">
+    <!-- Main Workspace -->
+    <main class="workspace">
+        <div class="grid-container">
 
-	  
-	<form class="input-group upload-data row">	
-		<div class="col-xl-6 col-md-6 col-sm-6">
-		<button type="button" class="btn btn-primary col-12" id="uload">Upload</button>
-		</div>
-		<div class="col-xl-6 col-md-6 col-sm-6">
-			<button id="send" type="button" class="btn btn-success col-12">Predict</button>
-		</div>
+            <!-- Source Input Panel -->
+            <section class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fa-regular fa-image"></i>
+                        <span>Input Source</span>
+                    </div>
+                    <div class="mode-tabs">
+                        <button type="button" class="tab-btn active" id="tabUpload">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                        </button>
+                        <button type="button" class="tab-btn" id="tabCamera">
+                            <i class="fa-solid fa-video"></i> Camera
+                        </button>
+                    </div>
+                </div>
 
-		<!-- change url value  -->
+                <!-- Input Display Stage -->
+                <div class="stage-box" id="dropArea">
+                    <!-- Dropzone Prompt -->
+                    <div class="dropzone-prompt" id="dropPrompt">
+                        <div class="prompt-icon-ring">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        </div>
+                        <div class="prompt-title">Drag & drop your image here</div>
+                        <div class="prompt-desc">Supports JPG, PNG, WEBP, or <span class="browse-link">browse files</span> from your computer</div>
+                    </div>
 
-		<input type="hidden" class="form-control mr-2" id="url" placeholder="Enter REST Api url..." value="../predict" />
-		<input name="upload" type="file" id="fileinput" style="position:absolute;top:-500px; display: none;" /><br />
-	</form>
+                    <!-- Media previews -->
+                    <img id="photo" alt="Selected input image" />
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas" style="display:none;"></canvas>
 
-	<div class="row">
-	  <!-- Team Member 1 -->
-	  <div class="col-xl-6 col-md-6 col-sm-6 mb-6">
-		<div class="card border-0 shadow upload-image ">
-		  <!-- <img src="https://source.unsplash.com/TMgQMXoglsM/500x350" class="card-img-top" alt="..."> -->
-		  	<video autoplay id="video" poster="https://img.freepik.com/free-vector/group-young-people-posing-photo_52683-18824.jpg?size=338&ext=jpg"></video>
-			<img src="" class="" id="photo">
-			<canvas style="display:none;" id="canvas"></canvas>
-		  <!-- <div class="card-body text-center">
-			<h5 class="card-title mb-0">Team Member</h5>
-		  </div> -->
-		</div>
-	  </div>
-	  <!-- Team Member 2 -->
-	  <div class="col-xl-6 col-md-6 col-sm-6 mb-6">
-		<div class="card border-0 shadow res-part2">
-		  <div class="card-body text-center">
-			<h5 class="card-title mb-0">Prediction Results</h5>
-		  </div>
-		</div>
-	  </div>
-	</div>
-	<!-- /.row -->
+                    <!-- Overlay indicators -->
+                    <div class="stage-overlay-badge" id="stageBadge">
+                        <i class="fa-solid fa-check"></i> <span id="badgeText">Image Ready</span>
+                    </div>
+                    <button type="button" class="stage-clear-btn" id="clearBtn" title="Remove image">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
 
-  
-  </div>
-  <!-- /.container -->
+                <!-- Hidden inputs -->
+                <input type="file" id="fileinput" accept="image/*" style="display: none;" />
+                <input type="hidden" id="url" value="/predict" />
 
-	<img class="logo"
-		src="https://apparel.ineuronvision.com/static/logo.png" />
+                <!-- Action Buttons -->
+                <div class="action-row">
+                    <button type="button" class="btn btn-secondary" id="uload">
+                        <i class="fa-solid fa-folder-open"></i> Choose Image
+                    </button>
+                    <button type="button" class="btn btn-outline-cyan" id="camActionBtn" style="display: none;">
+                        <i class="fa-solid fa-camera"></i> Capture Snapshot
+                    </button>
+                    <button type="button" class="btn btn-primary" id="send" disabled>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Predict
+                    </button>
+                </div>
 
+                <div class="action-row" style="margin-top: 10px;">
+                    <button type="button" class="btn btn-secondary" id="liveStreamBtn">
+                        <i class="fa-solid fa-tower-broadcast"></i> Run Live Detection (Server Webcam)
+                    </button>
+                </div>
 
-	<div id="loading">
-		<div class="loader"></div>
-	</div>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-	</script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-	</script>
+                <div class="toast-msg toast-error" id="errorToast"></div>
+                <div class="toast-msg toast-success" id="successToast"></div>
+            </section>
 
-	<script>
-		var mybtn = document.getElementById('startbtn');
-		var myvideo = document.getElementById('video');
-		var mycanvas = document.getElementById('canvas');
-		var myphoto = document.getElementById('photo');
-		var base_data = "";
+            <!-- Detection Results Panel -->
+            <section class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <span>Detection Results</span>
+                    </div>
+                    <div id="resultStatus" style="font-size: 13px; color: var(--text-muted);">
+                        Awaiting prediction
+                    </div>
+                </div>
 
-		function sendRequest(base64Data) {
-			var type = "json";
-			if (base64Data != "" || base64Data != null) {
-				if (type == "imgtobase") {
-					$(".res-part").html("");
-					$(".res-part").html(base64Data);
-				} else if (type == "basetoimg") {
-					var imageData = $("#imgstring").val();
-					$(".res-part").html("");
-					$(".res-part").append("<img src='data:image/jpeg;base64," + imageData + "' alt='' />");
-				} else {
-					var url = $("#url").val();
-					$("#loading").show();
-					$.ajax({
-						url: url,
-						type: "post",
-						cache: false,
-						async: true,
-						crossDomain: true,
-						headers: {
-							'Content-Type': 'application/json',
-							'Access-Control-Allow-Origin': '*'
-						},
-						data: JSON.stringify({
-							image: base64Data
-						}),
-						success: function (res) {
-							$(".res-part").html("");
-							$(".res-part2").html("");
-							var imageData = res.image;
-							$(".res-part2").append("<img class='resp-img' src='data:image/jpeg;base64," +
-								imageData + "' alt='' />");
-							// $(".res-part").html("<pre>" + JSON.stringify(res[0], undefined, 2) + "</pre>");
-							$("#loading").hide();
-						}
-					});
-				}
-			}
-		}
+                <!-- Result Stage -->
+                <div class="stage-box" style="border-style: solid; border-color: var(--border-glass);">
+                    <div class="result-empty" id="resultPlaceholder">
+                        <div class="result-empty-icon">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <div style="font-weight: 500; font-size: 15px; margin-bottom: 4px;">No Detection Output Yet</div>
+                        <div style="font-size: 13px;">Select an image and click <strong>Predict</strong> to identify discarded materials.</div>
+                    </div>
 
-		$(document).ready(function () {
-			$("#loading").hide();
+                    <div class="result-img-container res-part2" id="resultContainer" style="display: none;">
+                        <!-- Detection result image will be appended here -->
+                    </div>
+                </div>
 
-			$('#send').click(function (evt) {
-				sendRequest(base_data);
-			});
+                <!-- Result Actions -->
+                <div class="action-row">
+                    <a id="downloadResultBtn" class="btn btn-secondary" style="display: none;" download="detected_waste.jpg">
+                        <i class="fa-solid fa-download"></i> Download Annotated Result
+                    </a>
+                </div>
+            </section>
 
-			$('#uload').click(function (evt) {
-				$('#fileinput').focus().trigger('click');
-			});
-			$("#fileinput").change(function () {
-				if (this.files && this.files[0]) {
-					var reader = new FileReader();
-					reader.onload = function (e) {
-						var url = e.target.result;
-						var img = new Image();
-						img.crossOrigin = 'Anonymous';
-						img.onload = function () {
-							var canvas = document.createElement('CANVAS');
-							var ctx = canvas.getContext('2d');
-							canvas.height = this.height;
-							canvas.width = this.width;
-							ctx.drawImage(this, 0, 0);
-							base_data = canvas.toDataURL('image/jpeg', 1.0).replace(
-								/^data:image.+;base64,/, '');
-							canvas = null;
-						};
-						img.src = url;
-						$('#photo').attr('src', url);
-						$('#photo').show();
-						$('#video').hide();
-					}
-					reader.readAsDataURL(this.files[0]);
-				}
-			});
-		});
-	</script>
+        </div>
+    </main>
+
+    <!-- Categories / Supported Material Legend -->
+    <section class="classes-card">
+        <div class="classes-box">
+            <div class="classes-title">
+                <i class="fa-solid fa-tags"></i>
+                <span>13 Identifiable Discarded Material Categories</span>
+            </div>
+            <div class="classes-grid">
+                <span class="class-pill"><i class="fa-solid fa-leaf"></i> Banana</span>
+                <span class="class-pill"><i class="fa-solid fa-pepper-hot"></i> Chilli</span>
+                <span class="class-pill"><i class="fa-solid fa-wine-bottle"></i> Drink Can</span>
+                <span class="class-pill"><i class="fa-solid fa-box-open"></i> Drink Pack</span>
+                <span class="class-pill"><i class="fa-solid fa-can-food"></i> Food Can</span>
+                <span class="class-pill"><i class="fa-solid fa-seedling"></i> Lettuce</span>
+                <span class="class-pill"><i class="fa-solid fa-bag-shopping"></i> Paper Bag</span>
+                <span class="class-pill"><i class="fa-solid fa-trash-can"></i> Plastic Bag</span>
+                <span class="class-pill"><i class="fa-solid fa-bottle-water"></i> Plastic Bottle</span>
+                <span class="class-pill"><i class="fa-solid fa-cubes-stacked"></i> Plastic Container</span>
+                <span class="class-pill"><i class="fa-solid fa-carrot"></i> Sweet Potato</span>
+                <span class="class-pill"><i class="fa-solid fa-mug-saucer"></i> Tea Bag</span>
+                <span class="class-pill"><i class="fa-solid fa-scroll"></i> Tissue Roll</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        Discarded Material Identification System &bull; Powered by <span>YOLOv5</span> Deep Learning &bull; Flask Architecture
+    </footer>
+
+    <!-- Loading Overlay Modal -->
+    <div id="loading">
+        <div class="loader-card">
+            <div class="spinner"></div>
+            <div class="loader-text">Analyzing Discarded Materials</div>
+            <div class="loader-sub">Running YOLOv5 bounding-box localization & classification...</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        var base_data = "";
+        var activeStream = null;
+        var currentMode = "upload"; // "upload" or "camera"
+
+        function showToast(msg, isError) {
+            var $toast = isError ? $('#errorToast') : $('#successToast');
+            $toast.html((isError ? '<i class="fa-solid fa-circle-exclamation"></i> ' : '<i class="fa-solid fa-circle-check"></i> ') + msg).fadeIn();
+            setTimeout(function () {
+                $toast.fadeOut();
+            }, 4500);
+        }
+
+        function clearInputs() {
+            base_data = "";
+            $('#photo').attr('src', '').hide();
+            $('#dropPrompt').show();
+            $('#stageBadge').hide();
+            $('#clearBtn').hide();
+            $('#send').prop('disabled', true);
+            $('#fileinput').val('');
+        }
+
+        function setImageData(dataUrl) {
+            var img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function () {
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+                canvas.width = this.width;
+                canvas.height = this.height;
+                ctx.drawImage(this, 0, 0);
+                base_data = canvas.toDataURL('image/jpeg', 0.95).replace(/^data:image.+;base64,/, '');
+                
+                $('#photo').attr('src', dataUrl).show();
+                $('#dropPrompt').hide();
+                $('#badgeText').text('Image Loaded (' + img.width + 'x' + img.height + ')');
+                $('#stageBadge').css('display', 'flex');
+                $('#clearBtn').show();
+                $('#send').prop('disabled', false);
+            };
+            img.src = dataUrl;
+        }
+
+        function stopWebcam() {
+            if (activeStream) {
+                activeStream.getTracks().forEach(function (track) { track.stop(); });
+                activeStream = null;
+            }
+            $('#video').hide();
+        }
+
+        function startWebcam() {
+            clearInputs();
+            $('#dropPrompt').hide();
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
+                    .then(function (stream) {
+                        activeStream = stream;
+                        var video = document.getElementById('video');
+                        video.srcObject = stream;
+                        video.play();
+                        $('#video').show();
+                        $('#camActionBtn').show();
+                        $('#uload').hide();
+                    })
+                    .catch(function (err) {
+                        showToast("Could not access camera: " + err.message, true);
+                        $('#tabUpload').trigger('click');
+                    });
+            } else {
+                showToast("Webcam is not supported by your browser.", true);
+                $('#tabUpload').trigger('click');
+            }
+        }
+
+        function sendRequest(base64Data) {
+            if (!base64Data) {
+                showToast("Please provide or upload an image before predicting.", true);
+                return;
+            }
+
+            var url = $("#url").val() || "/predict";
+            $("#loading").css('display', 'flex');
+            $("#send").prop('disabled', true);
+            $("#resultStatus").text("Processing...");
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                cache: false,
+                contentType: "application/json",
+                data: JSON.stringify({ image: base64Data }),
+                success: function (res) {
+                    $("#loading").hide();
+                    $("#send").prop('disabled', false);
+
+                    if (res && res.image) {
+                        var imgSrc = "data:image/jpeg;base64," + res.image;
+                        $("#resultPlaceholder").hide();
+                        $("#resultContainer").html('<img class="result-img resp-img" src="' + imgSrc + '" alt="Detected Waste" />').show();
+                        $("#downloadResultBtn").attr('href', imgSrc).show();
+                        $("#resultStatus").html('<span style="color: #34d399;"><i class="fa-solid fa-check"></i> Complete</span>');
+                        showToast("Waste detection completed successfully!", false);
+                    } else if (res && res.error) {
+                        $("#resultStatus").text("Failed");
+                        showToast(res.error, true);
+                    } else {
+                        $("#resultStatus").text("Failed");
+                        showToast("Invalid response received from detection engine.", true);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#loading").hide();
+                    $("#send").prop('disabled', false);
+                    $("#resultStatus").text("Error");
+                    showToast("Prediction request failed: " + (error || "Server unreachable"), true);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // Mode switching
+            $('#tabUpload').click(function () {
+                $(this).addClass('active');
+                $('#tabCamera').removeClass('active');
+                currentMode = "upload";
+                stopWebcam();
+                $('#camActionBtn').hide();
+                $('#uload').show();
+                if (!base_data) {
+                    $('#dropPrompt').show();
+                } else {
+                    $('#photo').show();
+                }
+            });
+
+            $('#tabCamera').click(function () {
+                $(this).addClass('active');
+                $('#tabUpload').removeClass('active');
+                currentMode = "camera";
+                startWebcam();
+            });
+
+            // Capture snapshot from webcam
+            $('#camActionBtn').click(function () {
+                var video = document.getElementById('video');
+                var canvas = document.getElementById('canvas');
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                var snapUrl = canvas.toDataURL('image/jpeg', 0.95);
+                stopWebcam();
+                $('#tabUpload').addClass('active');
+                $('#tabCamera').removeClass('active');
+                $('#camActionBtn').hide();
+                $('#uload').show();
+                setImageData(snapUrl);
+            });
+
+            // Clear button
+            $('#clearBtn').click(function () {
+                clearInputs();
+            });
+
+            // Trigger file input
+            $('#uload, .browse-link').click(function () {
+                $('#fileinput').click();
+            });
+
+            // Drop area file change
+            $('#fileinput').change(function () {
+                if (this.files && this.files[0]) {
+                    var file = this.files[0];
+                    if (!file.type.match('image.*')) {
+                        showToast("Please select a valid image file (PNG, JPG, WEBP).", true);
+                        return;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        setImageData(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Drag and drop events
+            var dropArea = document.getElementById('dropArea');
+            ['dragenter', 'dragover'].forEach(function (eventName) {
+                dropArea.addEventListener(eventName, function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $('#dropArea').addClass('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(function (eventName) {
+                dropArea.addEventListener(eventName, function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $('#dropArea').removeClass('dragover');
+                }, false);
+            });
+
+            dropArea.addEventListener('drop', function (e) {
+                var dt = e.dataTransfer;
+                var files = dt.files;
+                if (files && files.length > 0) {
+                    var file = files[0];
+                    if (file.type.match('image.*')) {
+                        var reader = new FileReader();
+                        reader.onload = function (evt) {
+                            setImageData(evt.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        showToast("Only image files are supported.", true);
+                    }
+                }
+            }, false);
+
+            // Predict button
+            $('#send').click(function () {
+                sendRequest(base_data);
+            });
+
+            // Live camera route
+            $('#liveStreamBtn').click(function () {
+                showToast("Requesting server live detection stream...", false);
+                $.get('/live')
+                    .done(function (data) {
+                        showToast("Live detection stream started on server: " + data, false);
+                    })
+                    .fail(function (xhr, status, error) {
+                        showToast("Live detection could not be launched: " + error, true);
+                    });
+            });
+        });
+    </script>
 </body>
 
 </html>

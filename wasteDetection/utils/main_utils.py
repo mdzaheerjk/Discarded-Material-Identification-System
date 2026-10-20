@@ -30,9 +30,10 @@ def write_yaml_file(file_path:str,content:object,replace:bool=False)->None:
     
 def decodeImage(imgstring,fileName):
     imgdata=base64.b64decode(imgstring)
-    with open("./data"+fileName,'wb') as f:
+    target_path = os.path.join("data", os.path.basename(fileName))
+    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+    with open(target_path, 'wb') as f:
         f.write(imgdata)
-        f.close()
 
 def encodeImageIntoBase64(croppedImagePath):
     with open(croppedImagePath,'rb') as f:

@@ -1,8 +1,5 @@
-# train: ../augmented/images
-# val: ../valid/images
-
-train: ../kaggle/input/waste-detection-yolov8/augmented/augmented/augmented/images
-val: ../kaggle/input/waste-detection-yolov8/valid/valid/images
+train: D:/AI-ML/REAL WORLD PROJECTS/MACHINE LEARNING/Discarded-Material-Identification-System/new-waste-detection-yolov8/augmented/augmented/augmented/images
+val: D:/AI-ML/REAL WORLD PROJECTS/MACHINE LEARNING/Discarded-Material-Identification-System/new-waste-detection-yolov8/valid/valid/images
 
 nc: 13
 names: ['banana', 'chilli', 'drinkcan', 'drinkpack', 'foodcan', 'lettuce', 'paperbag', 'plasticbag', 'plasticbottle', 'plasticcontainer', 'sweetpotato', 'teabag', 'tissueroll']

@@ -1,4 +1,23 @@
+import os
+import sys
+import functools
+import torch
+
+# Intercept and wrap torch.load to bypass strict unpickling checks in PyTorch 2.6+
+if hasattr(torch, 'load'):
+    _original_load = torch.load
+    @functools.wraps(_original_load)
+    def _secured_load(*args, **kwargs):
+        if 'weights_only' not in kwargs:
+            try:
+                return _original_load(*args, weights_only=False, **kwargs)
+            except TypeError:
+                pass
+        return _original_load(*args, **kwargs)
+    torch.load = _secured_load
+
 # YOLOv5 🚀 by Ultralytics, AGPL-3.0 license
+
 """
 Train a YOLOv5 model on a custom dataset.
 Models and datasets download automatically from the latest YOLOv5 release.

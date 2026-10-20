@@ -81,4 +81,7 @@ class TrainingPipeline:
                 raise Exception("Your data is not in correct format")
         
         except Exception as e:
-            raise AppException(e,sys)            
+            raise AppException(e,sys)
+
+
+TrainPipeline = TrainingPipeline

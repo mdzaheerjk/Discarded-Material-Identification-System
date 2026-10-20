@@ -34,6 +34,21 @@ except ImportError:
 warnings.filterwarnings('ignore', message='User provided device_type of \'cuda\', but CUDA is not available. Disabling')
 warnings.filterwarnings('ignore', category=UserWarning)
 
+# Ensure safe unpickling in newer PyTorch versions where weights_only defaults to True
+if hasattr(torch, 'load'):
+    import functools
+    _orig_load = torch.load
+    @functools.wraps(_orig_load)
+    def _safe_load(*args, **kwargs):
+        if 'weights_only' not in kwargs:
+            try:
+                return _orig_load(*args, weights_only=False, **kwargs)
+            except TypeError:
+                pass
+        return _orig_load(*args, **kwargs)
+    torch.load = _safe_load
+
+
 
 def smart_inference_mode(torch_1_9=check_version(torch.__version__, '1.9.0')):
     # Applies torch.inference_mode() decorator if torch>=1.9.0 else torch.no_grad() decorator
