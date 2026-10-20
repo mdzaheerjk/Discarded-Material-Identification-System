@@ -1,0 +1,8 @@
+# train: ../augmented/images
+# val: ../valid/images
+
+train: ../kaggle/input/waste-detection-yolov8/augmented/augmented/augmented/images
+val: ../kaggle/input/waste-detection-yolov8/valid/valid/images
+
+nc: 13
+names: ['banana', 'chilli', 'drinkcan', 'drinkpack', 'foodcan', 'lettuce', 'paperbag', 'plasticbag', 'plasticbottle', 'plasticcontainer', 'sweetpotato', 'teabag', 'tissueroll']
